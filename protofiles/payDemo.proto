@@ -1,0 +1,304 @@
+syntax = "proto3";
+package protofiles;
+//option java_multiple_files = true;
+//option java_outer_classname = "PolProto";
+option java_package = "io.grpc.pay";
+option go_package = "pay";
+
+
+service Customer {
+    rpc checkMobile (CheckMobileRequest) returns (CheckMobileResponse) {
+    }
+    rpc checkLogin (CheckLoginRequest) returns (CheckLoginResponse) {
+    }
+    rpc verifySMS (VerifySmsRequest) returns (VerifySmsResponse) {
+    }
+    rpc register (RegisterCustomerRequest) returns (RegisterCustomerResponse) {
+    }
+    rpc addCard (AddCardRequest) returns (AddCardResponse) {
+    }
+    rpc removeCard (RemoveCardRequest) returns (RemoveCardResponse) {
+    }
+    rpc getCard (GetCardRequest) returns (GetCardResponse) {
+    }
+    rpc checkCardPassword (CheckCardPasswordRequest) returns (CheckCardPasswordResponse) {
+    }
+    rpc getCards (GetCardsRequest) returns (GetCardsResponse) {
+    }
+    rpc transaction (TransactionRequest) returns (TransactionResponse) {
+    }
+    rpc transferMoney (TransferMoneyRequest) returns (TransferMoneyResponse) {
+    }
+}
+
+message TransferMoneyResponse {
+    repeated TransferMoneyResponseCode responseCodes = 1;
+    enum TransferMoneyResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        MOBILE_BLOCKED = 2;
+        DISABLED = 3;
+        INVALID_SRC_CARD = 4;
+        INVALID_DST_CARD = 5;
+        WRONG_TOKEN = 6;
+        WRONG_USER = 7;
+        FAILED = 8;
+        WRONG_PASSWORD = 9;
+        INSUFFICIENT_BALANCE = 10;
+        WRONG_AMOUNT = 11;
+    }
+}
+
+message TransferMoneyRequest {
+    string token = 1;
+    string srcCardNumber = 2;
+    string password = 3;
+    string dstCardNumber = 4;
+    int64 transferAmount = 5;
+    string mobileNumber = 6;
+    CardType cardType = 7;
+}
+
+message CheckCardPasswordRequest {
+    string mobileNumber = 1;
+    string cardNumber = 2;
+    string token = 3;
+    string password = 4;
+    CardType type = 5;
+}
+
+message CheckCardPasswordResponse {
+    repeated CheckCardPasswordResponseCode responseCodes = 1;
+    enum CheckCardPasswordResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        MOBILE_BLOCKED = 2;
+        DISABLED = 3;
+        INVALID_CARD = 4;
+        WRONG_TOKEN = 5;
+        WRONG_USER = 6;
+        FAILED = 7;
+        WRONG_PASSWORD = 8;
+    }
+}
+
+
+message GetCardsRequest {
+    string mobileNumber = 1;
+    string token = 3;
+}
+
+message GetCardsResponse {
+    repeated GetCardsResponseCode responseCodes = 1;
+    repeated Card cards = 2;
+    enum GetCardsResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        MOBILE_BLOCKED = 2;
+        DISABLED = 3;
+        WRONG_TOKEN = 4;
+        WRONG_USER = 5;
+        FAILED = 6;
+    }
+}
+
+
+message GetCardRequest {
+    string mobileNumber = 1;
+    string cardNumber = 2;
+    string token = 3;
+    string passsowrd = 4;
+    CardType type = 5;
+}
+
+message GetCardResponse {
+    repeated GetCardResponseCode responseCodes = 1;
+    Card card = 2;
+    enum GetCardResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        MOBILE_BLOCKED = 2;
+        DISABLED = 3;
+        INVALID_CARD = 4;
+        WRONG_TOKEN = 5;
+        WRONG_USER = 6;
+        FAILED = 7;
+        WRONG_PASSWORD = 8;
+    }
+}
+
+
+message Card {
+    string cardNumber = 1;
+    string cardToken = 2;
+    string cvv2 = 3;
+    string year = 4;
+    string month = 5;
+    bool blocked = 6;
+    bool diabled = 7;
+    string cardName = 8;
+    CardType type = 9;
+    BankType bank = 10;
+    int64 balance = 11;
+}
+
+enum CardType {
+    PayCard = 0;
+    BankCard = 1;
+}
+
+message BankType {
+    string bankName = 1;
+    int32 bankID = 2;
+}
+
+
+message RemoveCardRequest {
+    string mobileNumber = 1;
+    string cardNumber = 2;
+    string token = 3;
+}
+
+message RemoveCardResponse {
+    repeated RemoveCardResponseCode responseCodes = 1;
+    enum RemoveCardResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        MOBILE_BLOCKED = 2;
+        DISABLED = 3;
+        INVALID_CARD = 4;
+        WRONG_TOKEN = 5;
+        WRONG_USER = 6;
+        FAILED = 7;
+    }
+}
+
+
+message AddCardRequest {
+    string mobileNumber = 1;
+    string cardNumber = 2;
+    string token = 3;
+}
+
+message AddCardResponse {
+    repeated AddCardResponseCode responseCodes = 1;
+    enum AddCardResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        MOBILE_BLOCKED = 2;
+        DISABLED = 3;
+        INVALID_CARD = 4;
+        CARD_EXISTS = 5;
+        WRONG_TOKEN = 6;
+        WRONG_USER = 7;
+        FAILED = 8;
+    }
+}
+
+
+message TransactionRequest {
+    //    string mobileNumber = 1;
+    //    string password = 2;
+    string token = 1;
+}
+
+message TransactionResponse {
+    repeated TransactionResponseCode responseCodes = 1;
+    enum TransactionResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        MOBILE_BLOCKED = 2;
+        DISABLED = 4;
+        WRONG_CARD_PASSWORD = 5;
+        INSUFFICIENT_BALANCE = 6;
+        INVALID_CARD = 7;
+        WRONG_PASSWORD = 8;
+        WRONG_TOKEN = 9;
+        WRONG_USER = 10;
+        FAILED = 11;
+    }
+}
+
+
+message RegisterCustomerRequest {
+    string mobileNumber = 1;
+    string password = 2;
+    string token = 3;
+}
+
+message RegisterCustomerResponse {
+    string message = 1;
+    repeated RegisterCustomerResponseCode responseCodes = 2;
+    enum RegisterCustomerResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        WRONG_TOKEN = 2;
+        MOBILE_BLOCKED = 3;
+        SHORT_PASSWORD = 4;
+        DISABLED = 7;
+        ALREADY_REGISTERED = 8;
+        FAILED = 9;
+    }
+}
+
+
+message VerifySmsRequest {
+    string smsCode = 1;
+    string token = 2;
+}
+
+message VerifySmsResponse {
+    string message = 1;
+    string token = 2;
+    repeated VerifyCustomerResponseCode responseCodes = 3;
+    enum VerifyCustomerResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        WRONG_TOKEN = 2;
+        MOBILE_BLOCKED = 3;
+        WRONG_CODE = 4;
+    }
+}
+
+
+message CheckLoginRequest {
+    string mobileNumber = 1;
+    string password = 2;
+}
+
+message CheckLoginResponse {
+    string message = 1;
+    string token = 2;
+    repeated CheckLoginResponseCode responseCodes = 3;
+    enum CheckLoginResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        MOBILE_BLOCKED = 2;
+        UNREGISTERED = 3;
+        DISABLED = 4;
+        WRONG_PASSWORD = 5;
+        FAILED = 6;
+        WRONG_MOBILE_NUMBER = 7;
+    }
+}
+
+
+message CheckMobileRequest {
+    string mobileNumber = 1;
+}
+
+message CheckMobileResponse {
+    string message = 1;
+    string token = 2;
+    repeated CheckMobileResponseCode responseCodes = 3;
+    enum CheckMobileResponseCode {
+        UNKNOWN = 0;
+        SUCCESS = 1;
+        MOBILE_BLOCKED = 2;
+        REGISTERED = 3;
+        UNREGISTERED = 4;
+        DISABLED = 5;
+    }
+}
+
+//protoc -I protofiles/ protofiles/payDemo.proto --go_out=plugins=grpc:protofiles
